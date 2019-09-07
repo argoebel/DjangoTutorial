@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+
 from bs4 import BeautifulSoup
 from urllib.request import urlopen as uReq
+from urllib.request import Request
 
 from django.shortcuts import render, redirect
 from django.template import loader
@@ -20,42 +22,48 @@ class Home(generic.DetailView):
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
-
-
-        my_url = 'https://www.allmusic.com/search/artists/'
-
+        base_url = 'https://www.allmusic.com'
+        search_url = 'https://www.allmusic.com/search/artists/'
         artist_name = "drake"
+        search_url+=artist_name
 
-        my_url+=artist_name
-
-        uClient = uReq(my_url)
-        page_html = uClient.read()
-        uClient.close()
+        req = Request(search_url, headers={'User-Agent': 'Mozilla/5.0'})
+        results_html = uReq(req).read()
 
         #html parsing
-        page_soup = BeautifulSoup(page_html, "html.parser")
+        page_soup = BeautifulSoup(results_html, "html.parser")
 
-        #grabs all products
+        #grabs all artists
         containers = page_soup.findAll("ul", {"class":"search-results"})
+        artist_url = containers[0].div.a['href']
+        print(artist_url)
 
-        #print("Newegg Video Cards\n")
+        artist_img = containers[0].div.img['src']
+        print(artist_img)
 
+        related_url = base_url + artist_url + '/related'
+
+        req = Request(related_url, headers={'User-Agent': 'Mozilla/5.0'})
+        related_html = uReq(req).read()
+
+        page_soup = BeautifulSoup(related_html, "html.parser")
+        containers = page_soup.findAll("section", {"class":"related similars"})
+
+        artist_list = []
+        #print(containers)
+        #print(len(containers))
         for container in containers:
-            print(container)
-            #brand = container.find("div", "item-info")
-            #brand = brand.div.a.img["title"]
-            #print(brand)
-            #title_container = container.findAll("a", {"class":"item-title"})
-            #print(title_container)
-            #product_name = title_container[0].text
-            #print(product_name)
-            #shipping_container = container.findAll("li", {"class":"price-ship"})
-            #print(shipping_container)
-            #shipping = shipping_container[0].text.strip()
-            #print(shipping)
-            #print()
+            artist_return = container.findAll(text=True)
 
-            # counter_object = Counter.objects.get(pk=1)
-            # counter_object.count += 1
-            # counter_object.save()
-            return redirect('homepage')
+        for artist in artist_return:
+            #print(str(artist))
+            #print(type(str(artist)))
+            artist_list.append(str(artist))
+
+        fixed = []
+        for artist in artist_list:
+            if artist != '\n' and artist != ' ' and artist != "Similar To":
+                fixed.append(artist)
+        print(fixed)
+
+        return redirect('homepage')
