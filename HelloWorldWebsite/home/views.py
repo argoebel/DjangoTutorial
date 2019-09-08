@@ -51,8 +51,11 @@ class Home(generic.DetailView):
         if artist_url[0:7] != '/artist':
             artist_url = '/artist/'+artist_url
 
-        artist_img = containers[0].div.img['src']
-        print(artist_img)
+        try:
+            artist_img = containers[0].div.img['src']
+            print(artist_img)
+        except:
+            artist_img = 'https://www.publicdomainpictures.net/pictures/180000/velka/vinyl-record-isolated.jpg'
 
         related_url = base_url + artist_url + '/related'
 
