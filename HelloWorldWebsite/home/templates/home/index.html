@@ -12,6 +12,7 @@
 <body>
 
   <form id="content" method="POST" name="submit-form">
+    {% csrf_token %}
     <input type="text" name="input" class="input" id="search-input">
     <button type="reset" class="search" id="search-btn"></button>
   </form>
