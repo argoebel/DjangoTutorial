@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 from bs4 import BeautifulSoup
 from urllib.request import urlopen as uReq
 from urllib.request import Request
+import unidecode
 
 from django.shortcuts import render, redirect
 from django.template import loader
@@ -25,6 +26,7 @@ class Home(generic.DetailView):
         base_url = 'https://www.allmusic.com'
         search_url = 'https://www.allmusic.com/search/artists/'
         artist_name = "drake"
+        artist_name = unidecode.unidecode(artist_name).replace(" ", "+")
         search_url+=artist_name
 
         req = Request(search_url, headers={'User-Agent': 'Mozilla/5.0'})
@@ -75,5 +77,30 @@ class Home(generic.DetailView):
             Artist.objects.create(id=artist_id, name=artist_name)
         except:
             print("Object Already Exists")
-            
+
+
+        for artist in fixed[:10]:
+            #adjusted_name = unicodedata.normalize("NFKD", unidecode.unidecode(artist)).replace(" ", "+")
+            adjusted_name = unidecode.unidecode(artist).replace(" ", "+")
+
+            #print(adjusted_name)
+
+            search_url = 'https://www.allmusic.com/search/artists/' + adjusted_name
+            #print(search_url)
+            req = Request(search_url, headers={'User-Agent': 'Mozilla/5.0'})
+            results_html = uReq(req).read()
+
+            #html parsing
+            page_soup = BeautifulSoup(results_html, "html.parser")
+
+            containers = page_soup.findAll("ul", {"class":"search-results"})
+            artist_url = containers[0].div.a['href']
+
+            if artist_url[0:len(base_url)] == base_url:
+                artist_url = artist_url[len('https://www.allmusic.com/artist/'):]
+
+            artist_id = artist_url[-12:]
+            print(artist, " ", artist_id, " ")
+
+
         return redirect('homepage')
