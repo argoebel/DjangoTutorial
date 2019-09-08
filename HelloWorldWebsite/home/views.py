@@ -83,7 +83,7 @@ class Home(generic.DetailView):
         print(fixed)
 
         try:
-            Artist.objects.create(id=initial_artist_id, name=artist_name)
+            Artist.objects.create(id=initial_artist_id, name=artist_name, img=artist_img)
         except:
             print("Object Already Exists")
 
