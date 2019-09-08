@@ -38,9 +38,15 @@ class Home(generic.DetailView):
         #grabs all artists
         containers = page_soup.findAll("ul", {"class":"search-results"})
         artist_url = containers[0].div.a['href']
+
+        if artist_url[0:len(base_url)] == base_url:
+            artist_url = artist_url[len('https://www.allmusic.com/artist/'):]
         print(artist_url)
 
         artist_id = artist_url[-12:]
+
+        if artist_url[0:7] != '/artist':
+            artist_url = '/artist/'+artist_url
 
         artist_img = containers[0].div.img['src']
         print(artist_img)
