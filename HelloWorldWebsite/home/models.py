@@ -12,4 +12,4 @@ class Artist(models.Model):
     id = models.CharField(max_length=100, primary_key=True)
     name = models.CharField(max_length=100)
     related = models.ManyToManyField("self", related_name="_related", symmetrical=False, blank=True)
-    img = models.CharField(max_length=1000)
+    img = models.CharField(max_length=1000, default='no image available')

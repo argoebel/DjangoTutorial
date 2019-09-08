@@ -42,8 +42,11 @@ class Home(generic.DetailView):
         artist_name = page_soup.findAll("ul", {"class":"search-results"})[0].div.img['alt']
         print(artist_name)
 
-        artist_img = page_soup.findAll("ul", {"class":"search-results"})[0].div.img['src']
-        print(artist_img)
+        try:
+            artist_img = page_soup.findAll("ul", {"class":"search-results"})[0].div.img['src']
+            print(artist_img)
+        except:
+            artist_img = 'https://www.publicdomainpictures.net/pictures/180000/velka/vinyl-record-isolated.jpg'
 
         if artist_url[0:len(base_url)] == base_url:
             artist_url = artist_url[len('https://www.allmusic.com/artist/'):]
@@ -54,8 +57,11 @@ class Home(generic.DetailView):
         if artist_url[0:7] != '/artist':
             artist_url = '/artist/'+artist_url
 
-        artist_img = containers[0].div.img['src']
-        print(artist_img)
+        try:
+            artist_img = containers[0].div.img['src']
+            print(artist_img)
+        except:
+            artist_img = 'https://www.publicdomainpictures.net/pictures/180000/velka/vinyl-record-isolated.jpg'
 
         related_url = base_url + artist_url + '/related'
 
