@@ -112,6 +112,12 @@ class Home(generic.DetailView):
             containers = page_soup.findAll("ul", {"class":"search-results"})
             artist_url = containers[0].div.a['href']
 
+            try:
+                artist_img = containers[0].div.img['src']
+                print(artist_img)
+            except:
+                artist_img = 'https://www.publicdomainpictures.net/pictures/180000/velka/vinyl-record-isolated.jpg'
+
             if artist_url[0:len(base_url)] == base_url:
                 artist_url = artist_url[len('https://www.allmusic.com/artist/'):]
 
