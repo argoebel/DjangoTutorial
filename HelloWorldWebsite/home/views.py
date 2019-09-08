@@ -7,9 +7,9 @@ from urllib.request import urlopen as uReq
 from urllib.request import Request
 import unidecode
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.template import loader
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
 from .models import Counter, Artist
 
@@ -38,6 +38,9 @@ class Home(generic.DetailView):
         #grabs all artists
         containers = page_soup.findAll("ul", {"class":"search-results"})
         artist_url = containers[0].div.a['href']
+
+        artist_name = page_soup.findAll("ul", {"class":"search-results"})[0].div.img['alt']
+        print(artist_name)
 
         if artist_url[0:len(base_url)] == base_url:
             artist_url = artist_url[len('https://www.allmusic.com/artist/'):]
@@ -116,12 +119,9 @@ class Home(generic.DetailView):
             except:
                 print("Object Already Exists")
 
-        return redirect('results')
 
 
-class Results(generic.DetailView):
-    template_name = "home/artist.html"
+        return render(request, "home/artist.html", {
+            'Artist': Q,
+        })
 
-    def get(self, request, *args, **kwargs):
-        context = {'our_artist' : 1}
-        return render(request, self.template_name, context)
