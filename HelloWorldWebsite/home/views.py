@@ -25,7 +25,7 @@ class Home(generic.DetailView):
     def post(self, request, *args, **kwargs):
         base_url = 'https://www.allmusic.com'
         search_url = 'https://www.allmusic.com/search/artists/'
-        artist_name = "kid cudi"
+        artist_name = request.POST['input']
         artist_name = unidecode.unidecode(artist_name).replace(" ", "+")
         search_url+=artist_name
 
@@ -104,7 +104,7 @@ class Home(generic.DetailView):
                 artist_url = artist_url[len('https://www.allmusic.com/artist/'):]
 
             artist_id = artist_url[-12:]
-            print(artist, " ", artist_id, " ")
+            #print(artist, " ", artist_id, " ")
 
             try:
                 instance = Artist.objects.create(id=artist_id, name=artist)
@@ -116,4 +116,12 @@ class Home(generic.DetailView):
             except:
                 print("Object Already Exists")
 
-        return redirect('homepage')
+        return redirect('results')
+
+
+class Results(generic.DetailView):
+    template_name = "home/results.html"
+
+    def get(self, request, *args, **kwargs):
+        context = {'our_counter' : 1}
+        return render(request, self.template_name, context)
