@@ -17,5 +17,5 @@ from django.urls import path
 from . import views
 urlpatterns = [
     path('', views.Home.as_view(), name='homepage'),
-    path('results', views.Results.as_view(), name='results')
+    # path('artist', views.Results.as_view(), name='artist')
 ]

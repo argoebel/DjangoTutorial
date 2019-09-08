@@ -7,9 +7,9 @@ from urllib.request import urlopen as uReq
 from urllib.request import Request
 import unidecode
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.template import loader
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.views import generic
 from .models import Counter, Artist
 
@@ -134,12 +134,9 @@ class Home(generic.DetailView):
             except:
                 print("Object Already Exists")
 
-        return redirect('results')
 
 
-class Results(generic.DetailView):
-    template_name = "home/results.html"
+        return render(request, "home/artist.html", {
+            'Artist': Q,
+        })
 
-    def get(self, request, *args, **kwargs):
-        context = {'our_counter' : 1}
-        return render(request, self.template_name, context)
