@@ -19,6 +19,7 @@
   </div> -->
 
   <form class="search-box" id="content" method="POST" name="submit-form">
+      {% csrf_token %}
             <input type="text" placeholder="Type to search" class="search-txt">
             <a href="" class="search-btn">
                     <i class="fas fa-search"></i>
