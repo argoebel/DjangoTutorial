@@ -25,7 +25,7 @@ class Home(generic.DetailView):
     def post(self, request, *args, **kwargs):
         base_url = 'https://www.allmusic.com'
         search_url = 'https://www.allmusic.com/search/artists/'
-        artist_name = "drake"
+        artist_name = "kid cudi"
         artist_name = unidecode.unidecode(artist_name).replace(" ", "+")
         search_url+=artist_name
 
@@ -43,7 +43,7 @@ class Home(generic.DetailView):
             artist_url = artist_url[len('https://www.allmusic.com/artist/'):]
         print(artist_url)
 
-        artist_id = artist_url[-12:]
+        initial_artist_id = artist_url[-12:]
 
         if artist_url[0:7] != '/artist':
             artist_url = '/artist/'+artist_url
@@ -76,14 +76,12 @@ class Home(generic.DetailView):
                 fixed.append(artist)
         print(fixed)
 
-        for artist in fixed:
-            print(artist)
-
         try:
-            Artist.objects.create(id=artist_id, name=artist_name)
+            Artist.objects.create(id=initial_artist_id, name=artist_name)
         except:
             print("Object Already Exists")
 
+        Q = Artist.objects.get(pk=initial_artist_id)
 
         for artist in fixed[:10]:
             #adjusted_name = unicodedata.normalize("NFKD", unidecode.unidecode(artist)).replace(" ", "+")
@@ -108,5 +106,14 @@ class Home(generic.DetailView):
             artist_id = artist_url[-12:]
             print(artist, " ", artist_id, " ")
 
+            try:
+                instance = Artist.objects.create(id=artist_id, name=artist)
+            except:
+                instance = Artist.objects.get(pk=artist_id)
+
+            try:
+                Q.related.add(instance)
+            except:
+                print("Object Already Exists")
 
         return redirect('homepage')
