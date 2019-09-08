@@ -10,7 +10,7 @@ from django.shortcuts import render, redirect
 from django.template import loader
 from django.http import HttpResponse
 from django.views import generic
-from .models import Counter
+from .models import Counter, Artist
 
 # Create your views here.
 class Home(generic.DetailView):
@@ -18,7 +18,7 @@ class Home(generic.DetailView):
     template_name = "home/index.html"
 
     def get(self, request, *args, **kwargs):
-        context = {'our_counter' : Counter.objects.get(pk=1)}
+        context = {'our_counter' : 1}
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
@@ -37,6 +37,8 @@ class Home(generic.DetailView):
         containers = page_soup.findAll("ul", {"class":"search-results"})
         artist_url = containers[0].div.a['href']
         print(artist_url)
+
+        artist_id = artist_url[-12:]
 
         artist_img = containers[0].div.img['src']
         print(artist_img)
@@ -66,4 +68,12 @@ class Home(generic.DetailView):
                 fixed.append(artist)
         print(fixed)
 
+        for artist in fixed:
+            print(artist)
+
+        try:
+            Artist.objects.create(id=artist_id, name=artist_name)
+        except:
+            print("Object Already Exists")
+            
         return redirect('homepage')
