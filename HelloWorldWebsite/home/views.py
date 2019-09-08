@@ -119,6 +119,9 @@ class Home(generic.DetailView):
             except:
                 print("Object Already Exists")
 
-        return render(request, "home/results.html", {
+
+
+        return render(request, "home/artist.html", {
             'Artist': Q,
         })
+
