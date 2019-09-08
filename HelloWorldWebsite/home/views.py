@@ -120,8 +120,8 @@ class Home(generic.DetailView):
 
 
 class Results(generic.DetailView):
-    template_name = "home/results.html"
+    template_name = "home/artist.html"
 
     def get(self, request, *args, **kwargs):
-        context = {'our_counter' : 1}
+        context = {'our_artist' : 1}
         return render(request, self.template_name, context)
